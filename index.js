@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <meta http-equiv="x-UA-Compatible" content="IE=edge, chrome=1" />
+    <title>Muvico Movies</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+    <script src="main.js"></script>
+  </head>
+  
+  <body>
+    <header>MUVICO</header>
+    <main>
+      <button class="tablink" data-tab="Home" id="defaultOpen">
+        Home
+      </button>
+      <button class="tablink" data-tab="Movies">
+        Movies
+      </button>
+      <button class="tablink" data-tab="Actors">
+        Actors
+      </button>
+      
+<div id="Home" class="tabcontent">
+  <h3>New Releases</h3>
+  <div class="result" id="newreleases">
+    <div class="slide-show"></div>
+    <div class="controls">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+</div>
+
+      <div id="Movies" class="tabcontent">
+        <h2>Movies</h2>
+        <form class="searchBarMovie">
+          <input
+            type="text"
+            id="titleForm"
+            placeholder="Search.."
+            name="search2"
+          />
+          <button type="submit" class="search">
+            <i class="fa fa-search"></i>
+          </button>
+        </form>
+        <!-- <h1>Movies</h1> -->
+
+        <div class="result" id="movie"></div>
+
+        <div class="mov coverArt"></div>
+      </div>
+
+      <div id="Actors" class="tabcontent">
+        <h2>Actors</h2>
+        <form class="searchBarActor">
+          <input
+            type="text"
+            id="actorForm"
+            placeholder="Search.."
+            name="search2"
+          />
+          <button type="submit" class="search">
+            <i class="fa fa-search"></i>
+          </button>
+        </form>
+        <div class="result" id="actor"></div>
+      </div>
+    </main>
+    <footer id="footer">&copy; Copyright 2019, All Rights Reserved</footer>
+  </body>
+</html>
