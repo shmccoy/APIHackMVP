@@ -1,88 +1,170 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
-    />
-    <meta http-equiv="x-UA-Compatible" content="IE=edge, chrome=1" />
-    <title>Muvico Movies</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
-    <script src="main.js"></script>
-  </head>
+function watchMovieSubmit(event) {
+  event.preventDefault();
+  //get the value
+  const searchBarMovie = $("#titleForm").val();
+  performMovieSearch(searchBarMovie);
+  console.log(searchBarMovie);
+  console.log("test0");
+}
 
-  <body>
-    <header>MUVICO</header>
-    <main>
-      <button class="tablink" data-tab="Home" id="defaultOpen">
-        Home
-      </button>
-      <button class="tablink" data-tab="Movies">
-        Movies
-      </button>
-      <button class="tablink" data-tab="Actors">
-        Actors
-      </button>
+function watchActorSubmit(event) {
+  event.preventDefault();
+  const searchBarActor = $("#actorForm").val();
+  performActorSearch(searchBarActor);
+}
 
-<div id="Home" class="tabcontent">
-  <h3>New Releases</h3>
-  <div class="result" id="newreleases">
-    <div class="slide-show"></div>
-    <div class="controls">
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    </div>
-  </div>
-</div>
+function newReleases() {
+  const url =
+    "https://api.themoviedb.org/3/movie/now_playing?api_key=625e6305ec06081d9670035238e43576&language=en-US";
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const movies = data.results;
+      const sortedMovies = movies.sort(sortCriteria).slice(0, 5);
+      renderNewReleases(sortedMovies);
+    });
 
-      <div id="Movies" class="tabcontent">
-        <h2>Movies</h2>
-        <form class="searchBarMovie">
-          <input
-            type="text"
-            id="titleForm"
-            placeholder="Search.."
-            name="search2"
-          />
-          <button type="submit" class="search">
-            <i class="fa fa-search"></i>
-          </button>
-        </form>
-        <!-- <h1>Movies</h1> -->
 
-        <div class="result" id="movie"></div>
+}
+newReleases();
 
-        <div class="mov coverArt"></div>
+function sortCriteria(a, b) {
+  if (moment(b.release_date).isAfter(a.release_date)) {
+    return 1;
+  } else {
+    if (moment(b.release_date).isSame(a.release_date)) {
+      return 0;
+    } else {
+      return -1;
+    }
+  }
+}
+
+function performMovieSearch(query) {
+  const base_url =
+    "https://api.themoviedb.org/3/search/movie?api_key=625e6305ec06081d9670035238e43576&language=en-US";
+  const url = `${base_url}&query=${query}`;
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => renderMovie(data.results))
+    .catch(error => {
+      $(".result").html(error.message);
+    });
+  console.log("test1");
+}
+
+function performActorSearch(query) {
+  const base_url =
+    "https://api.themoviedb.org/3/search/person?api_key=625e6305ec06081d9670035238e43576&language=en-US";
+  const url = `${base_url}&query=${query}`;
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => renderActor(data.results))
+    .catch(error => {
+      $("#actor").html(error.message);
+    });
+  console.log("test2");
+}
+
+function renderNewReleases(results) {
+  $(".slide-show").html(
+    results
+      .map(
+        item => `<div class="slide">
+        <img src= "https://image.tmdb.org/t/p/w500${item.poster_path}"/>
+        </div>`
+      )
+      .join("")
+  );
+  showSlides();
+  setInterval(showSlides, 5000);
+}
+
+let slideIndex = 0;
+
+function showSlides() {
+  let i;
+  let slides = $(".slide");
+  let dots = $(".dot");
+  slides.css({ opacity: 0 });
+  dots.removeClass("active");
+  slides.eq(slideIndex).css({ opacity: 1 });
+  slideIndex++;
+  if (slideIndex > slides.length - 1) {
+    slideIndex = 0;
+  }
+}
+
+
+
+
+function renderMovie(results) {
+  console.log(results);
+  $("#movie").html(
+    results
+      .map(
+        item => `<div class="image">
+      <img src= "https://image.tmdb.org/t/p/w500${item.poster_path}"/>
+      <div class="content">
+      <h2>${item.title}</h2>
+      <p>${item.overview}</p>
       </div>
+    </div>`
+      )
+      .join("")
+  );
+  console.log("test3");
+}
 
-      <div id="Actors" class="tabcontent">
-        <h2>Actors</h2>
-        <form class="searchBarActor">
-          <input
-            type="text"
-            id="actorForm"
-            placeholder="Search.."
-            name="search2"
-          />
-          <button type="submit" class="search">
-            <i class="fa fa-search"></i>
-          </button>
-        </form>
-        <div class="result" id="actor"></div>
+function renderActor(results) {
+  $("#actor").html(
+    results
+      .map(item => item.known_for).flat().map(
+        item => `<div class="image">
+      <img src= "https://image.tmdb.org/t/p/w500${item.poster_path}"/>
+      <div class="content">
+      <h2>${item.title}</h2>
+      <p>${item.overview}</p>
       </div>
-    </main>
-    <footer id="footer">&copy; Copyright 2019, All Rights Reserved</footer>
-  </body>
-</html>
+    </div>`
+      )
+      .join("")
+  );
+  console.log("test4");
+}
+
+function main() {
+  console.log("The main function");
+  $(".searchBarMovie").submit(watchMovieSubmit);
+  $(".searchBarActor").submit(watchActorSubmit);
+
+
+  $(".tablink").click(tabLinkHandler);
+
+  // Get the element with id="defaultOpen" and click on it
+  document.getElementById("defaultOpen").click();
+  console.log('test5');
+}
+//the jQuery ready function
+$(main);
+
+function tabLinkHandler(e) {
+  const btn = $(e.target).data("tab");
+  console.log(btn);
+
+  $(".tabcontent").hide();
+  $(".tablink").removeClass("selectedTab");
+  $(e.target).addClass("selectedTab");
+
+  $(`#${btn}`).show();
+}
